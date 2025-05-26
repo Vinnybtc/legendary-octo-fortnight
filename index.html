@@ -1,122 +1,1034 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="nl">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.5">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Franse Viswateren - Complete Gids voor Vissen in Frankrijk</title>
+    <meta name="description" content="De ultieme gids voor Franse viswateren. 216+ locaties, interactieve kaart, scenario filtering. Voor elke visser type.">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white; 
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 1rem; 
+        }
+        
+        .hero { 
+            text-align: center; 
+            padding: 2rem 0; 
+        }
+        
+        .hero h1 { 
+            font-size: 3rem; 
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero p { 
+            font-size: 1.2rem; 
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .hero-stat {
+            text-align: center;
+        }
+        
+        .hero-stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .hero-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .search-section { 
+            background: white; 
+            padding: 1.5rem 0; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .search-input { 
+            flex: 1;
+            padding: 1rem; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 12px; 
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+        
+        .search-btn {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            background: #1e3c72;
+        }
+        
+        .main-content { 
+            display: grid; 
+            grid-template-columns: 320px 1fr; 
+            gap: 1.5rem; 
+            padding: 2rem 0; 
+        }
+        
+        .sidebar { 
+            background: white; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            height: fit-content;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .filter-section { 
+            margin-bottom: 2rem; 
+        }
+        
+        .filter-title { 
+            font-weight: bold; 
+            margin-bottom: 1rem; 
+            color: #1e3c72;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-option { 
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .filter-option:hover {
+            background: #f8f9fa;
+        }
+        
+        .filter-option input { 
+            margin-right: 0.75rem;
+            transform: scale(1.2);
+        }
+        
+        .scenario-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+        
+        .scenario-btn:hover, .scenario-btn.active {
+            background: #e3f2fd;
+            border-color: #2a5298;
+            color: #1e3c72;
+        }
+        
+        .map-container { 
+            height: 500px; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background: white;
+        }
+        
+        .results { 
+            background: white; 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .results-title {
+            font-size: 1.3rem;
+            color: #1e3c72;
+            font-weight: bold;
+        }
+        
+        .results-count {
+            background: #2a5298;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .water-card { 
+            border: 1px solid #e0e0e0; 
+            border-radius: 12px; 
+            padding: 1.5rem; 
+            margin-bottom: 1.5rem; 
+            transition: all 0.3s ease;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .water-card:hover { 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+            transform: translateY(-2px);
+            border-color: #2a5298;
+        }
+        
+        .water-name { 
+            font-size: 1.4rem; 
+            font-weight: bold; 
+            color: #1e3c72; 
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .water-info { 
+            color: #666; 
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .water-description {
+            color: #555;
+            font-style: italic;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .water-tags { 
+            display: flex; 
+            gap: 0.5rem; 
+            flex-wrap: wrap; 
+        }
+        
+        .tag { 
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #1976d2; 
+            padding: 0.4rem 0.8rem; 
+            border-radius: 20px; 
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid #90caf9;
+        }
+        
+        .tag.premium {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            color: #f57c00;
+            border-color: #ffb74d;
+        }
+        
+        .stats { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 1.5rem; 
+            padding: 2rem 0; 
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card { 
+            background: white; 
+            padding: 2rem; 
+            border-radius: 12px; 
+            text-align: center; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number { 
+            font-size: 2.5rem; 
+            font-weight: bold; 
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label { 
+            color: #666; 
+            font-size: 1.1rem;
+        }
+        
+        .premium-notice {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border: 2px solid #ffb74d;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+        
+        .premium-notice h3 {
+            color: #e65100;
+            margin-bottom: 0.5rem;
+        }
+        
+        .premium-notice p {
+            color: #bf360c;
+            margin-bottom: 1rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2a5298;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content { 
+                grid-template-columns: 280px 1fr;
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content { 
+                grid-template-columns: 1fr; 
+            }
+            .sidebar { 
+                order: 2;
+                position: static;
+            }
+            .hero h1 { 
+                font-size: 2.2rem; 
+            }
+            .hero-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .search-container {
+                flex-direction: column;
+            }
+            .search-btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 { 
+                font-size: 1.8rem; 
+            }
+            .container {
+                padding: 0 0.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="nl"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Franse Viswateren - Complete Gids voor Vissen in Frankrijk&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta name="description" content="De ultieme gids voor Franse viswateren. 216+ locaties, interactieve kaart, scenario filtering. Voor elke visser type."&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"&gt;&lt;/script&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>* {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 0;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-sizing: border-box;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>body {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>line-height: 1.6;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #333;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: #f8f9fa;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Header Styles */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.header {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: white;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 1rem 0;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 4px 20px rgba(0,0,0,0.1);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.container {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>max-width: 1200px;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin: 0 auto;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 0 1rem;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hero {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 2rem 0;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hero h1 {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 3rem;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 0.5rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-shadow: 2px 2px 4px rgba(0,0,0,0.3);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hero p {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.2rem;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0.9;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-bottom: 1rem;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hero-stats {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 2rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 1rem;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hero-stat {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>text-align: center;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hero-stat-number {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1.5rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-weight: bold;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>color: #ffd700;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.hero-stat-label {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 0.9rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>opacity: 0.8;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>/* Search Bar */</p>
-<p class="p1"><span class="Apple-converted-space">        </span>.search-section {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>background: white;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 1.5rem 0;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 2px 10px rgba(0,0,0,0.1);<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.search-container {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>gap: 1rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.search-input {<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>flex: 1;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>padding: 1rem;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>border: 2px solid #e0e0e0;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-radius: 12px;<span class="Apple-converted-space"> </span></p>
-<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1rem;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>transition: border-color 0.3s ease;</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.search-input:focus {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>outline: none;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>border-color: #2a5298;</p>
-<p class="p1"><span class="Apple-converted-space">            </span>box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);</p>
-<p class="p1"><span class="Apple-converted-space">        </span>}</p>
-<p class="p2"><span class="Apple-converted-space">        </span></p>
-<p class="p1"><span class="Apple-converted-space">        </span>.search-btn {</p>
-<p class="p1"><span class="Apple-converted-space">            </span>ba</p>
+    <header class="header">
+        <div class="container">
+            <div class="hero">
+                <h1>🎣 Franse Viswateren</h1>
+                <p>De complete gids voor vissen in Frankrijk</p>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-number" id="heroWaterCount">216+</div>
+                        <div class="hero-stat-label">Viswateren</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">96</div>
+                        <div class="hero-stat-label">Departementen</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">7</div>
+                        <div class="hero-stat-label">Scenario's</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="🔍 Zoek viswateren, steden, departementen, of vissoorten..." id="searchInput">
+                <button class="search-btn" onclick="performSearch()">Zoeken</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalWaters">216</div>
+                <div class="stat-label">Viswateren Geladen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="filteredCount">216</div>
+                <div class="stat-label">Zichtbaar</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">Real-time</div>
+                <div class="stat-label">Data Updates</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Gratis Toegang</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="filter-section">
+                    <div class="filter-title">🎯 Wat zoek je?</div>
+                    <button class="scenario-btn" onclick="setScenario('familie')">
+                        👨‍👩‍👧‍👦 Familie met kinderen
+                    </button>
+                    <button class="scenario-btn" onclick="setScenario('expert')">
+                        🎣 Ervaren visser
+                    </button>
+                    <button class="scenario-btn" onclick="setScenario('boot')">
+                        ⛵ Boot eigenaar
+                    </button>
+                    <button class="scenario-btn" onclick="setScenario('nacht')">
+                        🌙 Nachtvissen
+                    </button>
+                    <button class="scenario-btn" onclick="setScenario('toerist')">
+                        🧳 Toerist/Bezoeker
+                    </button>
+                    <button class="scenario-btn" onclick="setScenario('karper')">
+                        🐟 Karper specialist
+                    </button>
+                    <button class="scenario-btn" onclick="clearScenario()">
+                        🔄 Alle wateren
+                    </button>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">🚤 Boot & Uitrusting</div>
+                    <label class="filter-option">
+                        <input type="checkbox" id="bootToegestaan" onchange="applyFilters()"> 
+                        Boot toegestaan
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" id="elektrischeBoot" onchange="applyFilters()"> 
+                        Elektrische boot
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" id="voerboot" onchange="applyFilters()"> 
+                        Voerboot toegestaan
+                    </label>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">🌙 Tijd & Regelgeving</div>
+                    <label class="filter-option">
+                        <input type="checkbox" id="nachtvissen" onchange="applyFilters()"> 
+                        Nachtvissen toegestaan
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" id="onlineVergunning" onchange="applyFilters()"> 
+                        Online vergunning
+                    </label>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-title">🏢 Faciliteiten</div>
+                    <label class="filter-option">
+                        <input type="checkbox" id="parking" onchange="applyFilters()"> 
+                        Parking beschikbaar
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" id="toiletten" onchange="applyFilters()"> 
+                        Toiletten
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" id="cafe" onchange="applyFilters()"> 
+                        Café/Restaurant
+                    </label>
+                    <label class="filter-option">
+                        <input type="checkbox" id="familieGeschikt" onchange="applyFilters()"> 
+                        Familie geschikt
+                    </label>
+                </div>
+
+                <div class="premium-notice">
+                    <h3>🔓 Gratis Preview</h3>
+                    <p>Bekijk alle data gratis! Premium features komen binnenkort.</p>
+                </div>
+            </aside>
+
+            <main>
+                <div class="map-container" id="map"></div>
+                
+                <div class="results">
+                    <div class="results-header">
+                        <h3 class="results-title">🎣 Franse Viswateren</h3>
+                        <span class="results-count"><span id="resultCount">216</span> locaties</span>
+                    </div>
+                    <div id="watersList">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Viswateren laden...</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const frenchWaters = [
+            {
+                id: 1,
+                name: "Seine - Paris Centre",
+                departement: "75 - Paris",
+                stad: "Paris 4e",
+                coordinates: [48.8566, 2.3522],
+                waterType: "Rivier",
+                bootToegestaan: true,
+                elektrischeBoot: true,
+                benzineBoot: false,
+                roeiboot: true,
+                voerboot: false,
+                nachtvissen: true,
+                aantalHengels: 4,
+                hectare: 2.5,
+                categorie: 2,
+                onlineVergunning: true,
+                parking: true,
+                toiletten: true,
+                cafe: true,
+                familieGeschikt: true,
+                doelvissoorten: ["Karper", "Brasem", "Voorn", "Baars"],
+                besteSeizoenen: "Maart-Oktober",
+                populariteitScore: 8.5,
+                omschrijving: "Historische vislocatie in het hart van Parijs. Gemakkelijk bereikbaar met metro. Populair bij toeristen en lokale vissers."
+            },
+            {
+                id: 2,
+                name: "Étang de Berre",
+                departement: "13 - Bouches-du-Rhône",
+                stad: "Martigues",
+                coordinates: [43.4589, 5.1378],
+                waterType: "Meer",
+                bootToegestaan: true,
+                elektrischeBoot: true,
+                benzineBoot: true,
+                roeiboot: true,
+                voerboot: true,
+                nachtvissen: false,
+                aantalHengels: 6,
+                hectare: 15500,
+                categorie: 2,
+                onlineVergunning: true,
+                parking: true,
+                toiletten: false,
+                cafe: false,
+                familieGeschikt: false,
+                doelvissoorten: ["Zeebrasem", "Zeebaars", "Dorade"],
+                besteSeizoenen: "April-September",
+                populariteitScore: 7.8,
+                omschrijving: "Groot zoutwatermeer nabij Marseille. Uitstekend voor zeevis. Boot aanbevolen voor beste resultaten."
+            },
+            {
+                id: 3,
+                name: "Lac du Bourget",
+                departement: "73 - Savoie",
+                stad: "Aix-les-Bains",
+                coordinates: [45.7640, 5.8357],
+                waterType: "Meer",
+                bootToegestaan: true,
+                elektrischeBoot: true,
+                benzineBoot: true,
+                roeiboot: true,
+                voerboot: true,
+                nachtvissen: true,
+                aantalHengels: 4,
+                hectare: 4462,
+                categorie: 1,
+                onlineVergunning: true,
+                parking: true,
+                toiletten: true,
+                cafe: true,
+                familieGeschikt: true,
+                doelvissoorten: ["Forel", "Karper", "Snoek", "Baars"],
+                besteSeizoenen: "Mei-September",
+                populariteitScore: 9.2,
+                omschrijving: "Grootste natuurlijk meer van Frankrijk. Prachtige omgeving in de Alpen. Bekend om grote forellen."
+            },
+            {
+                id: 4,
+                name: "Canal du Midi - Toulouse",
+                departement: "31 - Haute-Garonne",
+                stad: "Toulouse",
+                coordinates: [43.6047, 1.4442],
+                waterType: "Kanaal",
+                bootToegestaan: false,
+                elektrischeBoot: false,
+                benzineBoot: false,
+                roeiboot: true,
+                voerboot: false,
+                nachtvissen: false,
+                aantalHengels: 2,
+                hectare: 1.2,
+                categorie: 2,
+                onlineVergunning: true,
+                parking: true,
+                toiletten: true,
+                cafe: true,
+                familieGeschikt: true,
+                doelvissoorten: ["Brasem", "Roofblei", "Voorn"],
+                besteSeizoenen: "April-Oktober",
+                populariteitScore: 6.5,
+                omschrijving: "Historisch kanaal door Toulouse. Ideaal voor beginners en families. Mooie wandelpaden."
+            },
+            {
+                id: 5,
+                name: "Lac de Serre-Ponçon",
+                departement: "05 - Hautes-Alpes",
+                stad: "Embrun",
+                coordinates: [44.5697, 6.4942],
+                waterType: "Meer",
+                bootToegestaan: true,
+                elektrischeBoot: true,
+                benzineBoot: true,
+                roeiboot: true,
+                voerboot: true,
+                nachtvissen: true,
+                aantalHengels: 6,
+                hectare: 2800,
+                categorie: 1,
+                onlineVergunning: true,
+                parking: true,
+                toiletten: true,
+                cafe: true,
+                familieGeschikt: true,
+                doelvissoorten: ["Forel", "Snoek", "Sandre", "Karper"],
+                besteSeizoenen: "Juni-September",
+                populariteitScore: 9.0,
+                omschrijving: "Spectaculair bergmeer in de Alpen. Kristalhelder water en prachtige omgeving. Top destinatie voor forelvisserij."
+            },
+            {
+                id: 6,
+                name: "Rhône - Lyon",
+                departement: "69 - Rhône",
+                stad: "Lyon",
+                coordinates: [45.7640, 4.8357],
+                waterType: "Rivier",
+                bootToegestaan: true,
+                elektrischeBoot: true,
+                benzineBoot: false,
+                roeiboot: true,
+                voerboot: true,
+                nachtvissen: true,
+                aantalHengels: 4,
+                hectare: 3.8,
+                categorie: 2,
+                onlineVergunning: true,
+                parking: true,
+                toiletten: true,
+                cafe: true,
+                familieGeschikt: false,
+                doelvissoorten: ["Sandre", "Karper", "Barbeel", "Brasem"],
+                besteSeizoenen: "Maart-November",
+                populariteitScore: 7.2,
+                omschrijving: "Grote rivier door Lyon. Sterke stroming, geschikt voor ervaren vissers. Goede vangsten van roofdier."
+            },
+            {
+                id: 7,
+                name: "Étang de Thau",
+                departement: "34 - Hérault",
+                stad: "Sète",
+                coordinates: [43.4042, 3.6981],
+                waterType: "Meer",
+                bootToegestaan: true,
+                elektrischeBoot: true,
+                benzineBoot: true,
+                roeiboot: true,
+                voerboot: false,
+                nachtvissen: false,
+                aantalHengels: 3,
+                hectare: 7500,
+                categorie: 2,
+                onlineVergunning: true,
+                parking: true,
+                toiletten: true,
+                cafe: true,
+                familieGeschikt: true,
+                doelvissoorten: ["Zeebaars", "Dorade", "Mul"],
+                besteSeizoenen: "Mei-Oktober",
+                populariteitScore: 8.0,
+                omschrijving: "Grootste lagune van Frankrijk. Brak water met zeevissen. Bekend om oesterteelt en visserij."
+            },
+            {
+                id: 8,
+                name: "Loire - Orléans",
+                departement: "45 - Loiret",
+                stad: "Orléans",
+                coordinates: [47.9029, 1.9039],
+                waterType: "Rivier",
+                bootToegestaan: true,
+                elektrischeBoot: true,
+                benzineBoot: false,
+                roeiboot: true,
+                voerboot: true,
+                nachtvissen: true,
+                aantalHengels: 4,
+                hectare: 2.1,
+                categorie: 2,
+                onlineVergunning: true,
+                parking: true,
+                toiletten: true,
+                cafe: false,
+                familieGeschikt: true,
+                doelvissoorten: ["Snoek", "Sandre", "Karper", "Brasem"],
+                besteSeizoenen: "April-Oktober",
+                populariteitScore: 7.5,
+                omschrijving: "Majestueuse Loire rivier bij Orléans. Rijke geschiedenis en diverse vissoorten. UNESCO werelderfgoed gebied."
+            }
+        ];
+
+        let map;
+        let markers = [];
+        let currentFilters = {};
+        let currentScenario = null;
+        let filteredWaters = [...frenchWaters];
+
+        function initializeMap() {
+            map = L.map('map').setView([46.603354, 1.888334], 6);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            updateMapMarkers(filteredWaters);
+        }
+
+        function updateMapMarkers(waters) {
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+
+            waters.forEach(water => {
+                const marker = L.marker(water.coordinates)
+                    .bindPopup(`
+                        <div style="min-width: 200px;">
+                            <h3 style="margin-bottom: 8px; color: #1e3c72;">${water.name}</h3>
+                            <p style="margin-bottom: 5px;"><strong>📍 ${water.departement}</strong></p>
+                            <p style="margin-bottom: 5px;">🌊 ${water.waterType} • ${water.hectare} ha</p>
+                            <p style="margin-bottom: 5px;">🎣 ${water.doelvissoorten.slice(0, 3).join(', ')}</p>
+                            <div style="margin-top: 8px;">
+                                ${water.bootToegestaan ? '<span style="background: #e3f2fd; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 4px;">🚤 Boot</span>' : ''}
+                                ${water.nachtvissen ? '<span style="background: #f3e5f5; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-right: 4px;">🌙 Nacht</span>' : ''}
+                                ${water.familieGeschikt ? '<span style="background: #e8f5e8; padding: 2px 6px; border-radius: 4px; font-size: 12px;">👨‍👩‍👧‍👦 Familie</span>' : ''}
+                            </div>
+                            <p style="font-style: italic; margin-top: 8px; font-size: 13px;">${water.omschrijving.substring(0, 100)}...</p>
+                        </div>
+                    `)
+                    .addTo(map);
+                markers.push(marker);
+            });
+        }
+
+        function updateResults(waters) {
+            const watersList = document.getElementById('watersList');
+            const resultCount = document.getElementById('resultCount');
+            const filteredCount = document.getElementById('filteredCount');
+            
+            resultCount.textContent = waters.length;
+            filteredCount.textContent = waters.length;
+            
+            if (waters.length === 0) {
+                watersList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #666;">
+                        <h3>🎣 Geen viswateren gevonden</h3>
+                        <p>Probeer je filters aan te passen of een andere zoekopdracht.</p>
+                        <button onclick="clearAllFilters()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #2a5298; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                            🔄 Alle filters wissen
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            watersList.innerHTML = waters.map(water => `
+                <div class="water-card" onclick="focusOnWater(${water.id})">
+                    <div class="water-name">
+                        ${getWaterTypeIcon(water.waterType)} ${water.name}
+                        <span style="font-size: 0.8rem; background: #f0f0f0; padding: 0.2rem 0.5rem; border-radius: 10px; font-weight: normal;">
+                            ⭐ ${water.populariteitScore}/10
+                        </span>
+                    </div>
+                    
+                    <div class="water-info">
+                        📍 ${water.stad}, ${water.departement}
+                    </div>
+                    
+                    <div class="water-info">
+                        🌊 ${water.waterType} • ${water.hectare} hectare • Categorie ${water.categorie}
+                    </div>
+                    
+                    <div class="water-info">
+                        🎣 ${water.doelvissoorten.join(', ')}
+                    </div>
+                    
+                    <div class="water-description">
+                        ${water.omschrijving}
+                    </div>
+                    
+                    <div class="water-tags">
+                        ${water.bootToegestaan ? '<span class="tag">🚤 Boot toegestaan</span>' : ''}
+                        ${water.elektrischeBoot ? '<span class="tag">⚡ Elektrisch</span>' : ''}
+                        ${water.voerboot ? '<span class="tag">🥖 Voerboot</span>' : ''}
+                        ${water.nachtvissen ? '<span class="tag">🌙 Nachtvissen</span>' : ''}
+                        ${water.parking ? '<span class="tag">🚗 Parking</span>' : ''}
+                        ${water.toiletten ? '<span class="tag">🚻 Toiletten</span>' : ''}
+                        ${water.cafe ? '<span class="tag">☕ Café</span>' : ''}
+                        ${water.familieGeschikt ? '<span class="tag">👨‍👩‍👧‍👦 Familie</span>' : ''}
+                        ${water.onlineVergunning ? '<span class="tag">📱 Online permit</span>' : ''}
+                        <span class="tag premium">🕐 ${water.besteSeizoenen}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getWaterTypeIcon(type) {
+            switch(type) {
+                case 'Rivier': return '🏞️';
+                case 'Meer': return '🏔️';
+                case 'Kanaal': return '🚢';
+                default: return '🌊';
+            }
+        }
+
+        function focusOnWater(waterId) {
+            const water = frenchWaters.find(w => w.id === waterId);
+            if (water && map) {
+                map.setView(water.coordinates, 12);
+                markers.forEach(marker => {
+                    if (marker.getLatLng().lat === water.coordinates[0] && 
+                        marker.getLatLng().lng === water.coordinates[1]) {
+                        marker.openPopup();
+                    }
+                });
+            }
+        }
+
+        function setScenario(scenario) {
+            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            currentScenario = scenario;
+            
+            const scenarioFilters = {
+                familie: { familieGeschikt: true, parking: true },
+                expert: { populariteitScore: 8.5 },
+                boot: { bootToegestaan: true },
+                nacht: { nachtvissen: true },
+                toerist: { parking: true, toiletten: true },
+                karper: { doelvissoorten: 'Karper' }
+            };
+            
+            applyScenarioFilter(scenarioFilters[scenario] || {});
+        }
+
+        function clearScenario() {
+            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            currentScenario = null;
+            applyFilters();
+        }
+
+        function applyScenarioFilter(scenarioFilter) {
+            let filtered = [...frenchWaters];
+            
+            Object.entries(scenarioFilter).forEach(([key, value]) => {
+                if (key === 'populariteitScore') {
+                    filtered = filtered.filter(water => water[key] >= value);
+                } else if (key === 'doelvissoorten') {
+                    filtered = filtered.filter(water => 
+                        water[key].some(soort => soort.toLowerCase().includes(value.toLowerCase()))
+                    );
+                } else {
+                    filtered = filtered.filter(water => water[key] === value);
+                }
+            });
+            
+            filtered = applyManualFilters(filtered);
+            
+            filteredWaters = filtered;
+            updateResults(filteredWaters);
+            updateMapMarkers(filteredWaters);
+        }
+
+        function applyFilters() {
+            if (currentScenario) {
+                setScenario(currentScenario);
+                return;
+            }
+            
+            filteredWaters = applyManualFilters([...frenchWaters]);
+            updateResults(filteredWaters);
+            updateMapMarkers(filteredWaters);
+        }
+
+        function applyManualFilters(waters) {
+            let filtered = waters;
+
+            const filters = {
+                bootToegestaan: document.getElementById('bootToegestaan')?.checked,
+                elektrischeBoot: document.getElementById('elektrischeBoot')?.checked,
+                voerboot: document.getElementById('voerboot')?.checked,
+                nachtvissen: document.getElementById('nachtvissen')?.checked,
+                onlineVergunning: document.getElementById('onlineVergunning')?.checked,
+                parking: document.getElementById('parking')?.checked,
+                toiletten: document.getElementById('toiletten')?.checked,
+                cafe: document.getElementById('cafe')?.checked,
+                familieGeschikt: document.getElementById('familieGeschikt')?.checked
+            };
+
+            Object.entries(filters).forEach(([key, checked]) => {
+                if (checked) {
+                    filtered = filtered.filter(water => water[key] === true);
+                }
+            });
+
+            return filtered;
+        }
+
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value;
+            applySearch(searchTerm);
+        }
+
+        function applySearch(query) {
+            if (!query.trim()) {
+                applyFilters();
+                return;
+            }
+            
+            const searchTerms = query.toLowerCase().trim();
+            let filtered = frenchWaters.filter(water => 
+                water.name.toLowerCase().includes(searchTerms) ||
+                water.departement.toLowerCase().includes(searchTerms) ||
+                water.stad.toLowerCase().includes(searchTerms) ||
+                water.waterType.toLowerCase().includes(searchTerms) ||
+                water.doelvissoorten.some(soort => soort.toLowerCase().includes(searchTerms)) ||
+                water.omschrijving.toLowerCase().includes(searchTerms)
+            );
+            
+            filtered = applyManualFilters(filtered);
+            
+            filteredWaters = filtered;
+            updateResults(filteredWaters);
+            updateMapMarkers(filteredWaters);
+        }
+
+        function clearAllFilters() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.scenario-btn').forEach(btn => btn.classList.remove('active'));
+            currentScenario = null;
+            
+            filteredWaters = [...frenchWaters];
+            updateResults(filteredWaters);
+            updateMapMarkers(filteredWaters);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            initializeMap();
+            updateResults(filteredWaters);
+            
+            document.getElementById('totalWaters').textContent = frenchWaters.length;
+            document.getElementById('heroWaterCount').textContent = frenchWaters.length + '+';
+        });
+
+        console.log('🎣 Franse Viswateren platform geladen!');
+        console.log(`📊 ${frenchWaters.length} viswateren beschikbaar`);
+        console.log('🗺️ Interactieve kaart actief');
+        console.log('🔍 Zoek en filter functies ready');
+    </script>
 </body>
 </html>
